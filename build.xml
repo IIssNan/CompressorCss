@@ -1,38 +1,18 @@
-<?xml version="1.0" ?>
-<project name="Compress CSS files with YUICompressor" default="run">
-    <property name="dir.lib" value="${basedir}/lib" />
-    <property name="dir.source" value="${basedir}/source/" />
-    <property name="dir.output" value="${basedir}/output/" />
+<project name="ant project build file" basedir=".">
 
-    <target name="init">
-        <echo>Building...</echo>
-        <mkdir dir="${dir.source}" />
-        <mkdir dir="${dir.output}" />
+    <!--S 引用CompressorCss目录下的project build.xml -->
+    <target name="CompressCss">
+        <subant>
+            <property name="dir.source" value="${basedir}/test" />
+            <property name="file.sources" value="*.css" />
+            <property name="dir.output" value="${basedir}/test" />
+            <property name="file.destname" value="test" />
+            
+            <fileset dir="./CompressorCss">
+                <filename name="build.xml" />
+            </fileset>
+        </subant>
     </target>
+    <!--E 引用CompressorCss目录下的project build.xml -->
 
-    <target name="concat">
-        <echo>Concat...</echo>
-        <concat destfile="${dir.output}/main.css">
-            <fileset dir="${dir.source}" includes="*.css" excludes="temp.css" />
-        </concat>
-    </target>
-
-    <target name="compress">
-        <echo>Compressing...</echo>
-        <property name="yui-compressor" value="${dir.lib}/yuicompressor-2.4.6.jar" />
-        <apply executable="java" dest="${dir.output}">
-            <fileset dir="${dir.output}" includes="main.css" />
-            <arg line="-jar" />
-            <arg path="${yui-compressor}" />
-            <arg line="--type css --charset UTF-8 --verbose -o" />
-            <targetfile />
-            <mapper type="glob" from="*.css" to="*.min.css" />
-        </apply>
-    </target>
-
-    <target name="clean">
-        <delete file="${dir.output}/main.css" />
-    </target>
-
-    <target name="run" depends="init, concat, compress, clean" />
 </project>

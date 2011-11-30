@@ -11,6 +11,7 @@
     <property name="file.sources" value="${file.sources}" />
 
     <target name="init">
+        <tstamp />
         <echo>Building...</echo>
         <mkdir dir="${dir.temp}" />
         <mkdir dir="${dir.source}" />

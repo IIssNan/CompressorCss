@@ -19,6 +19,6 @@
 
 ## Arguments
     dir.source      [必须] 待压缩源目录
-    file.source     [可选] 待处理文件，可选，默认为目录下全部文件
+    file.sources     [可选] 待处理文件，可选，默认为目录下全部文件
     dir.output      [可选] 输出目录，可选，默认为同目录下的${dir.output}
     file.destname   [可选] 输出文件名称，默认为${file.destname}

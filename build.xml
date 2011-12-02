@@ -3,21 +3,11 @@
     <property name="dir.tmp" value="${basedir}/tmp" />
 
     <fail unless="dir.source" message="Property 'dir.source' must be specified!"/>
-    <property name="dir.source" value="${dir.source}" />
-
-    <!-- 获取父级build.xml指定的参数 -->
-    <condition property="dir.output" value="${dir.output}" else="output">
-        <isset property="dir.output" />
-    </condition>
-    <condition property="file.destname" value="${file.destname}" else="script">
-        <isset property="file.destname" />
-    </condition>
-    <condition property="file.includes" value="${file.includes}" else="*.css">
-        <isset property="file.includes" />
-    </condition>
-    <condition property="file.excludes" value="${file.excludes}" else="">
-        <isset property="file.excludes" />
-    </condition>
+    <property name="dir.source" value="" />
+    <property name="dir.output" value="output" />
+    <property name="file.destname" value="script" />
+    <property name="file.includes" value="*.css" />
+    <property name="file.excludes" value="" />
 
     <target name="init">
         <tstamp />

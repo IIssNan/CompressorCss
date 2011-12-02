@@ -2,13 +2,14 @@
     <property name="dir.lib" value="${basedir}/lib" />
     <property name="dir.temp" value="${basedir}/temp" />
 
-    <fail unless="dir.source" message="dir.test Must be specified!"/>
+    <fail unless="dir.source" message="dir.source Must be specified!"/>
 
     <!-- 获取父级build.xml指定的参数 -->
     <property name="dir.source" value="${dir.source}" />
     <property name="dir.output" value="${dir.output}" />
     <property name="file.destname" value="${file.destname}" />
-    <property name="file.sources" value="${file.sources}" />
+    <property name="file.includes" value="${file.includes}" />
+    <property name="file.excludes" value="${file.includes}" />
 
     <target name="init">
         <tstamp />
@@ -21,11 +22,10 @@
     <target name="concat">
         <echo>Concat...</echo>
         <concat destfile="${dir.temp}/${file.destname}.css">
-            <fileset dir="${dir.source}">
-                <include name="${file.sources}" />
-                <exclude name="temp.css" />
-                <exclude name="*.min.css" />
-            </fileset>
+            <fileset dir="${dir.source}"
+                     includes="${file.includes}"
+                     excludes="${file.destname}.min.css, ${file.excludes}"
+            />
         </concat>
     </target>
 

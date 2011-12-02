@@ -1,27 +1,35 @@
 <project name="CSS Compressor" default="run">
     <property name="dir.lib" value="${basedir}/lib" />
-    <property name="dir.temp" value="${basedir}/temp" />
+    <property name="dir.tmp" value="${basedir}/tmp" />
 
-    <fail unless="dir.source" message="dir.source Must be specified!"/>
+    <fail unless="dir.source" message="Property 'dir.source' must be specified!"/>
+    <property name="dir.source" value="${dir.source}" />
 
     <!-- 获取父级build.xml指定的参数 -->
-    <property name="dir.source" value="${dir.source}" />
-    <property name="dir.output" value="${dir.output}" />
-    <property name="file.destname" value="${file.destname}" />
-    <property name="file.includes" value="${file.includes}" />
-    <property name="file.excludes" value="${file.includes}" />
+    <condition property="dir.output" value="${dir.output}" else="output">
+        <isset property="dir.output" />
+    </condition>
+    <condition property="file.destname" value="${file.destname}" else="script">
+        <isset property="file.destname" />
+    </condition>
+    <condition property="file.includes" value="${file.includes}" else="*.css">
+        <isset property="file.includes" />
+    </condition>
+    <condition property="file.excludes" value="${file.excludes}" else="">
+        <isset property="file.excludes" />
+    </condition>
 
     <target name="init">
         <tstamp />
         <echo>Building...</echo>
-        <mkdir dir="${dir.temp}" />
+        <mkdir dir="${dir.tmp}" />
         <mkdir dir="${dir.source}" />
         <mkdir dir="${dir.output}" />
     </target>
 
     <target name="concat">
         <echo>Concat...</echo>
-        <concat destfile="${dir.temp}/${file.destname}.css">
+        <concat destfile="${dir.tmp}/${file.destname}.css">
             <fileset dir="${dir.source}"
                      includes="${file.includes}"
                      excludes="${file.destname}.min.css, ${file.excludes}"
@@ -33,7 +41,7 @@
         <echo>Compressing...</echo>
         <property name="yui-compressor" value="${dir.lib}/yuicompressor-2.4.6.jar" />
         <apply executable="java" dest="${dir.output}">
-            <fileset dir="${dir.temp}" includes="${file.destname}.css" />
+            <fileset dir="${dir.tmp}" includes="${file.destname}.css" />
             <arg line="-jar" />
             <arg path="${yui-compressor}" />
             <arg line="--type css --charset UTF-8 --verbose -o" />
@@ -44,7 +52,7 @@
 
     <target name="clean">
         <delete>
-            <fileset dir="${dir.temp}" includes="*.css" />
+            <fileset dir="${dir.tmp}" includes="*.css" />
         </delete>
     </target>
 

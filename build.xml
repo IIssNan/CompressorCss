@@ -1,25 +1,56 @@
 <project name="CSS Compressor" default="run">
-    <property name="dir.lib" value="${basedir}/lib" />
-    <property name="dir.tmp" value="${basedir}/tmp" />
 
     <fail unless="dir.source" message="Property 'dir.source' must be specified!"/>
-    <property name="dir.source" value="" />
+
+    <property name="dir.lib" value="${basedir}/lib" />
+    <property name="dir.tmp" value="${basedir}/tmp" />
+    <property name="dir.test" location="${basedir}/test" />
+
+    <!-- Install Ant-Contrib-->
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+        <classpath>
+            <pathelement location="${dir.lib}/ant-contrib-1.0b3.jar"/>
+        </classpath>
+    </taskdef>
+
+    <!-- Arguments with default value -->
     <property name="dir.output" value="output" />
-    <property name="file.destname" value="script" />
+    <property name="file.destname" value="css" />
     <property name="file.includes" value="*.css" />
     <property name="file.excludes" value="" />
 
+    <!--${is.debug}'s default value is FALSE-->
+    <property name="is.debug" value="false" />
+
+    <if>
+        <equals arg1="${is.debug}" arg2="true" />
+        <then>
+            <property name="dir.output.concatenate" location="${dir.output}" />
+        </then>
+        <else>
+            <mkdir dir="${dir.tmp}" />
+            <property name="dir.output.concatenate" location="${dir.tmp}" />
+        </else>
+    </if>
+
+
+
+
     <target name="init">
         <tstamp />
-        <echo>Building...</echo>
-        <mkdir dir="${dir.tmp}" />
-        <mkdir dir="${dir.source}" />
         <mkdir dir="${dir.output}" />
+        <mkdir dir="${dir.output.concatinate}" />
     </target>
 
+    <target name="clean">
+        <delete dir="${dir.output}" />
+        <delete dir="${dir.output.concatinate}" />
+    </target>
+
+
+    <!--Concatenate files TODO: in specified order-->
     <target name="concat">
-        <echo>Concat...</echo>
-        <concat destfile="${dir.tmp}/${file.destname}.css">
+        <concat destfile="${dir.output.concatenate}/${file.destname}.css">
             <fileset dir="${dir.source}"
                      includes="${file.includes}"
                      excludes="${file.destname}.min.css, ${file.excludes}"
@@ -27,8 +58,8 @@
         </concat>
     </target>
 
+    <!--Compress files-->
     <target name="compress">
-        <echo>Compressing...</echo>
         <property name="yui-compressor" value="${dir.lib}/yuicompressor-2.4.6.jar" />
         <apply executable="java" dest="${dir.output}">
             <fileset dir="${dir.tmp}" includes="${file.destname}.css" />
@@ -40,11 +71,20 @@
         </apply>
     </target>
 
-    <target name="clean">
-        <delete>
-            <fileset dir="${dir.tmp}" includes="*.css" />
-        </delete>
+    <target name="build">
+        <if>
+            <equals arg1="${is.debug}" arg2="true" />
+            <then>
+                <antcall target="concat" />
+            </then>
+            <else>
+                <antcall target="compress" />
+            </else>
+        </if>
     </target>
 
-    <target name="run" depends="init, concat, compress, clean" />
+    <target name="run" depends="clean, init">
+        <antcall target="build" />
+    </target>
+
 </project>

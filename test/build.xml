@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<project name="test" default="run" basedir=".">
+    <property name="dir.src" location="${basedir}/src" />
+
+    <target name="init">
+        <mkdir dir="output" />
+    </target>
+
+    <target name="clean">
+        <delete dir="output" />
+    </target>
+
+    <target name="run" depends="init">
+        <antcall target="clean" />
+        <subant buildpath="${basedir}/../" antfile="build.xml">
+            <property name="dir.source" location="${dir.src}" />
+            <property name="dir.output" location="${basedir}/output" />
+            <property name="file.destname" value="css" />
+            <property name="is.debug" value="false" />
+        </subant>
+    </target>
+</project>

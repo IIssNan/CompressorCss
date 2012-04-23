@@ -12,10 +12,13 @@
 
     <target name="run" depends="init">
         <antcall target="clean" />
+        <antcall target="init" />
+
         <subant buildpath="${basedir}/../" antfile="build.xml">
             <property name="dir.source" location="${dir.src}" />
             <property name="dir.output" location="${basedir}/output" />
             <property name="file.destname" value="css" />
+            <property name="file.includes" value="b.css, a.css" />
             <property name="is.debug" value="false" />
         </subant>
     </target>

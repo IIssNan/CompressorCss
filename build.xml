@@ -30,7 +30,6 @@
 
     <target name="clean">
         <delete dir="${dir.tmp}" />
-        <delete dir="${dir.output}" />
     </target>
 
 
@@ -39,15 +38,23 @@
         <if>
             <equals arg1="${file.includes}" arg2="*" />
             <then>
-                <concat fixlastline="true" destfile="${dir.output.concatenate}/${file.destname}.css">
+                <concat fixlastline="true" destfile="${dir.output.concatenate}/${file.destname}.css"
+                        encoding="utf-8" outputencoding="utf-8">
                     <fileset dir="${dir.source}" includes="${file.includes}" />
+                    <filterchain>
+                        <deletecharacters chars="&#xFEFF;" />
+                    </filterchain>
                 </concat>
             </then>
             <elseif>
                 <equals arg1="${file.includes}" arg2="*.css" />
                 <then>
-                    <concat fixlastline="true" destfile="${dir.output.concatenate}/${file.destname}.css">
+                    <concat fixlastline="true" destfile="${dir.output.concatenate}/${file.destname}.css"
+                            encoding="utf-8" outputencoding="utf-8">
                         <fileset dir="${dir.source}" includes="${file.includes}" />
+                        <filterchain>
+                            <deletecharacters chars="&#xFEFF;" />
+                        </filterchain>
                     </concat>
                 </then>
             </elseif>
@@ -60,8 +67,12 @@
                         <copy file="${dir.source}/@{file}" tofile="${dir.tmp}/source/${index}_@{file}" />
                     </sequential>
                 </for>
-                <concat fixlastline="true" destfile="${dir.output.concatenate}/${file.destname}.css">
+                <concat fixlastline="true" destfile="${dir.output.concatenate}/${file.destname}.css"
+                        encoding="utf-8" outputencoding="utf-8">
                     <fileset dir="${dir.tmp}/source" />
+                    <filterchain>
+                        <deletecharacters chars="&#xFEFF;" />
+                    </filterchain>
                 </concat>
                 <delete dir="${dir.tmp}/source" />
             </else>

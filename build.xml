@@ -112,6 +112,7 @@
         <antcall target="clean" />
         <antcall target="init" />
         <antcall target="build" />
+        <delete dir="${dir.tmp}" />
     </target>
 
 </project>
